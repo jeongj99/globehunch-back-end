@@ -4,11 +4,11 @@
 DELETE from users;
 INSERT INTO users
 (user_name, password_hash, email)
-VALUES ('Alice', '$2a$10$18hdKagp.BaaveVf4OWtIeD.mqr/ptK7K66bno1BygX.5dY4Hq7YO', 'alice@gmail.com'),
-('Kira', '$2a$10$18hdKagp.BaaveVf4OWtIeD.mqr/ptK7K66bno1BygX.5dY4Hq7YO', 'kira@gmail.com'),
-('Mike', '$2a$10$18hdKagp.BaaveVf4OWtIeD.mqr/ptK7K66bno1BygX.5dY4Hq7YO', 'mike@gmail.com'),
-('Frank', '$2a$10$18hdKagp.BaaveVf4OWtIeD.mqr/ptK7K66bno1BygX.5dY4Hq7YO', 'frank@gmail.com'),
-('Lucy', '$2a$10$18hdKagp.BaaveVf4OWtIeD.mqr/ptK7K66bno1BygX.5dY4Hq7YO', 'lucy@gamail.com');
+VALUES ('Alice', '$2a$10$A/NgRRjySR1nZB5EoAEHJO7Du2VE.exlhjm5K8HPUz4f9s6NeG.3S', 'alice@gmail.com'),
+('Kira', '$2a$10$A/NgRRjySR1nZB5EoAEHJO7Du2VE.exlhjm5K8HPUz4f9s6NeG.3S', 'kira@gmail.com'),
+('Mike', '$2a$10$A/NgRRjySR1nZB5EoAEHJO7Du2VE.exlhjm5K8HPUz4f9s6NeG.3S', 'mike@gmail.com'),
+('Frank', '$2a$10$A/NgRRjySR1nZB5EoAEHJO7Du2VE.exlhjm5K8HPUz4f9s6NeG.3S', 'frank@gmail.com'),
+('Lucy', '$2a$10$A/NgRRjySR1nZB5EoAEHJO7Du2VE.exlhjm5K8HPUz4f9s6NeG.3S', 'lucy@gamail.com');
 
 
 DELETE from games;
