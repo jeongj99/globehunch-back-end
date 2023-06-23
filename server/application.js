@@ -12,7 +12,7 @@ const db = require("./db");
 
 const games = require("./routes/games");
 
-function read(file) {
+const read = file => {
   return new Promise((resolve, reject) => {
     fs.readFile(
       file,
@@ -25,12 +25,12 @@ function read(file) {
       }
     );
   });
-}
+};
 
-module.exports = function application(
+const application = (
   ENV,
   actions = {}
-) {
+) => {
   app.use(cors());
   app.use(helmet());
   app.use(bodyparser.json());
@@ -67,3 +67,5 @@ module.exports = function application(
 
   return app;
 };
+
+module.exports = application;
