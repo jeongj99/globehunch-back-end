@@ -28,5 +28,4 @@ app.listen(PORT, () => {
 
 const geoGameRouter = require('./routes/geo-game-router');
 //First argument is parent path, all routes will be under this parent route
-app.use('/geo-game', geoGameRouter)
-
+app.use('/geo-game', geoGameRouter);
