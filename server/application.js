@@ -29,7 +29,13 @@ const read = file => {
 
 const application = (
   ENV,
-  actions = {}
+  actions = {
+    getUserByEmail: () => {},
+    getUserByUsername: () => {},
+    registerUser: () => {},
+    calculateDistanceKm: () => {},
+    calculateTurnScore: () => {}
+  }
 ) => {
   app.use(cors());
   app.use(helmet());
@@ -39,7 +45,7 @@ const application = (
     keys: ['global', 'hunch']
   }));
 
-  app.use("/api", games(db));
+  app.use("/api", games(db, actions));
 
   if (ENV === "development" || ENV === "test") {
     Promise.all([
