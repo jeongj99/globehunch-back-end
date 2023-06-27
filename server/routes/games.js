@@ -1,9 +1,79 @@
 const express = require('express');
+
 const router = express.Router();
-const bcrypt = require("bcryptjs");
+const bcrypt = require('bcryptjs');
+const { createToken, validateToken } = require('../JWT');
 
 module.exports = (db, actions) => {
   const { getUserByEmail, getUserByUsername, registerUser, calculateDistanceKm, calculateTurnScore } = actions;
+
+  // ****************************************************
+  // http://localhost:8001/api/register
+  router.post('/register', (req, res) => {
+    const { username, email, password } = req.body;
+
+    getUserByEmail(db, email).then(user => {
+      if (user) {
+        return res.status(400).json({
+          error: 'Email exists',
+          message: 'An account with this email already exists!'
+        });
+      }
+      getUserByUsername(db, username).then(user => {
+        if (user) {
+          return res.status(400).json({
+            error: 'Username exists',
+            message: 'This username has already been taken!'
+          });
+        }
+        const hashedPassword = bcrypt.hashSync(password, 10);
+        registerUser(db, username, email, hashedPassword).then(registered => {
+          const accessToken = createToken(registered);
+
+          req.session.accessToken = accessToken;
+
+          const loggedInUser = {
+            id: registered.id,
+            username: registered.user_name
+          };
+          return res.json({ error: null, authenticated: true, user });
+        })
+          .catch(error => {
+            res.status(400).json({ error });
+          });
+      });
+    });
+  });
+
+  router.post("/login", (req, res) => {
+    const { email, password } = req.body;
+
+    getUserByEmail(db, email).then(user => {
+      if (user || bcrypt.compareSync(password, user.password_hash)) {
+        const accessToken = createToken(user);
+
+        req.session.accessToken = accessToken;
+
+        const loggedInUser = {
+          id: user.id,
+          username: user.user_name
+        };
+
+        return res.json({ error: null, authenticated: true, loggedInUser });
+      }
+      return res.status(400).json({ error: 'Incorrect email or password!' });
+    });
+  });
+
+  router.post("/authenticate", validateToken, (req, res) => {
+    const { authenticated, user } = req;
+    return res.json({ authenticated, user });
+  });
+
+  router.post("/logout", validateToken, (req, res) => {
+    req.session.destroy();
+    return res.json({ error: null, auth: false });
+  });
 
   // get user's games
   // curl http://localhost:8001/api/games/3
@@ -67,64 +137,6 @@ module.exports = (db, actions) => {
 
     // return game object
     response.json(game);
-  });
-
-  // ****************************************************
-  // http://localhost:8001/api/register
-  router.post("/register", (req, res) => {
-    const { username, email, password } = req.body;
-
-    getUserByEmail(db, email).then(user => {
-      if (user) {
-        return res.json({ error: "Email exists", message: "An account with this email already exists!" });
-      }
-      getUserByUsername(db, username).then(user => {
-        if (user) {
-          return res.json({ error: "Username exists", message: "This username has already been taken!" });
-        } else {
-          const hashedPassword = bcrypt.hashSync(password, 10);
-          registerUser(db, username, email, hashedPassword).then(user => {
-            req.session.userEmail = user.email;
-            return res.json({ error: null, message: "Success", user });
-          })
-            .catch(error => {
-              console.log(error.message);
-            });
-        }
-      });
-    });
-  });
-
-  router.post("/login", (req, res) => {
-    const { email, password } = req.body;
-
-    getUserByEmail(db, email).then(user => {
-      if (!user || !bcrypt.compareSync(password, user.password_hash)) {
-        return res.json({ error: "Failed login", message: "Incorrect email or password!" });
-      } else {
-        req.session.userEmail = user.email;
-        return res.json({ error: null, message: "Success", user });
-      }
-    });
-  });
-
-  router.post("/authenticate", (req, res) => {
-    if (req.session.userEmail) {
-      getUserByEmail(db, req.session.userEmail).then(user => {
-        return res.json({ error: null, message: "Success", user });
-      });
-    } else {
-      return res.json({ error: "Failed authentication", message: "You do not have a cookie session!" });
-    }
-  });
-
-  router.post("/logout", (req, res) => {
-    if (req.session.userEmail) {
-      req.session = null;
-      res.json({ error: null, message: "Successfully logged out" });
-    } else {
-      res.json({ error: "Failed logout", message: "You are not logged in" });
-    }
   });
 
   // ****************************************************
