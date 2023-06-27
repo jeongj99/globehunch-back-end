@@ -10,6 +10,8 @@ const cookieSession = require("cookie-session");
 const app = express();
 const db = require("./db");
 
+const { sessionMiddleware } = require('./serverController');
+
 const games = require("./routes/games");
 
 const read = file => {
@@ -40,6 +42,8 @@ const application = (
   app.use(cors());
   app.use(helmet());
   app.use(bodyparser.json());
+
+  app.use(sessionMiddleware);
   app.use(cookieSession({
     name: 'session',
     keys: ['global', 'hunch']
