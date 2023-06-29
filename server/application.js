@@ -5,7 +5,6 @@ const express = require("express");
 const bodyparser = require("body-parser");
 const helmet = require("helmet");
 const cors = require("cors");
-const cookieSession = require("cookie-session");
 
 const app = express();
 const db = require("./db");
@@ -39,15 +38,11 @@ const application = (
     calculateTurnScore: () => {}
   }
 ) => {
-  app.use(cors());
+  app.use(cors({ credentials: true, origin: true }));
   app.use(helmet());
   app.use(bodyparser.json());
 
   app.use(sessionMiddleware);
-  app.use(cookieSession({
-    name: 'session',
-    keys: ['global', 'hunch']
-  }));
 
   app.use("/api", games(db, actions));
 
