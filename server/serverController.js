@@ -5,6 +5,7 @@ const client = require('./db/index');
 const sessionMiddleware = session({
   store: new PGSession({ client }),
   secret: process.env.SESSION_KEY,
+  saveUninitialized: false,
   resave: false,
   cookie: {
     httpOnly: true,
