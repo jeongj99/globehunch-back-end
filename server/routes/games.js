@@ -36,7 +36,7 @@ module.exports = (db, actions) => {
             id: registered.id,
             username: registered.user_name
           };
-          return res.json({ error: null, authenticated: true, user });
+          return res.json({ error: null, authenticated: true, loggedInUser });
         })
           .catch(error => {
             res.status(400).json({ error });
