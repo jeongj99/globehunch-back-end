@@ -91,52 +91,52 @@ module.exports = (db, actions) => {
   // ****************************************************
   // POST create new game
   // curl --request POST http://localhost:8001/api/games/3
-  router.post("/games/:user_id", validateToken, async (request, response) => {
-
+  router.post("/games", validateToken, async (req, res) => {
+    const loggedInUser = req.user;
     // get all questions id
-    const { rows: questions } = await db.query(
-      `SELECT id as question_id, latitude, longitude from questions;`
-    );
+    // const { rows: questions } = await db.query(
+    //   `SELECT id as question_id, latitude, longitude from questions;`
+    // );
 
-    // choose 3 randon questions
-    const selectedQuestions = [];
-    for (let i = 0; i < 3; i++) {
-      const n = Math.floor(Math.random() * questions.length);
-      selectedQuestions.push(questions[n]);
-      questions.splice(n, 1);
-    }
+    // // choose 3 randon questions
+    // const selectedQuestions = [];
+    // for (let i = 0; i < 3; i++) {
+    //   const n = Math.floor(Math.random() * questions.length);
+    //   selectedQuestions.push(questions[n]);
+    //   questions.splice(n, 1);
+    // }
 
-    // insert game row to the db
-    const { rows } = await db.query(
-      `
-      INSERT INTO games (user_id, start_time)
-      VALUES ($1, NOW()) RETURNING *;`,
-      [request.params.user_id]
-    );
-    let game = rows[0];
-    game.turns = [];
+    // // insert game row to the db
+    // const { rows } = await db.query(
+    //   `
+    //   INSERT INTO games (user_id, start_time)
+    //   VALUES ($1, NOW()) RETURNING *;`,
+    //   [req.params.user_id]
+    // );
+    // let game = rows[0];
+    // game.turns = [];
 
-    // insert turns into db
-    for (let i = 0; i < selectedQuestions.length; i++) {
-      let { rows } = await db.query(
+    // // insert turns into db
+    // for (let i = 0; i < selectedQuestions.length; i++) {
+    //   let { rows } = await db.query(
 
-        `INSERT INTO turns
-      (user_id, game_id, question_id, turn_number, score)
-         VALUES
-      ($1, $2, $3, $4, null) RETURNING *;`,
-        [game.user_id, game.id, selectedQuestions[i].question_id, i + 1]
-      );
-      rows[0].latitude = selectedQuestions[i].latitude;
-      rows[0].longitude = selectedQuestions[i].longitude;
-      delete rows[0].user_id;
-      delete rows[0].game_id;
+    //     `INSERT INTO turns
+    //   (user_id, game_id, question_id, turn_number, score)
+    //      VALUES
+    //   ($1, $2, $3, $4, null) RETURNING *;`,
+    //     [game.user_id, game.id, selectedQuestions[i].question_id, i + 1]
+    //   );
+    //   rows[0].latitude = selectedQuestions[i].latitude;
+    //   rows[0].longitude = selectedQuestions[i].longitude;
+    //   delete rows[0].user_id;
+    //   delete rows[0].game_id;
 
-      game.turns.push(rows[0]);
-    }
-    console.log(game);
+    //   game.turns.push(rows[0]);
+    // }
+    // console.log(game);
 
-    // return game object
-    response.json(game);
+    // // return game object
+    // res.json(game);
   });
 
   // ****************************************************
