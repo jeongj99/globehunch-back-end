@@ -91,23 +91,23 @@ module.exports = (db, actions) => {
   // ****************************************************
   // POST create new game
   // curl --request POST http://localhost:8001/api/games/3
-  router.post("/games/:user_id", async (request, response) => {
+  router.post("/games/:user_id", validateToken, async (request, response) => {
 
     // get all questions id
-    let { rows: questions } = await db.query(
+    const { rows: questions } = await db.query(
       `SELECT id as question_id, latitude, longitude from questions;`
     );
 
     // choose 3 randon questions
-    let selectedQuestions = [];
+    const selectedQuestions = [];
     for (let i = 0; i < 3; i++) {
-      let n = Math.floor(Math.random() * questions.length);
+      const n = Math.floor(Math.random() * questions.length);
       selectedQuestions.push(questions[n]);
       questions.splice(n, 1);
     }
 
     // insert game row to the db
-    let { rows } = await db.query(
+    const { rows } = await db.query(
       `
       INSERT INTO games (user_id, start_time)
       VALUES ($1, NOW()) RETURNING *;`,
@@ -169,24 +169,6 @@ module.exports = (db, actions) => {
     });
   });
 
-
-
-  // POST close turn by the player in the game
-  router.post("/turns", (request, response) => {
-    db.query(
-      `
-  INSERT INTO turns (user_id, game_id, question_id, turn_number, score)
-  VALUES ($1, $2, $3, 1, $4) RETURNING *;`,
-      [
-        request.body.user_id,
-        request.body.game_id,
-        request.body.question_id,
-        request.body.score
-      ]
-    ).then(({ rows }) => {
-      response.json(rows[0]);
-    });
-  });
 
   // GET score for user
   // curl http://localhost:8001/api/users/score/103
