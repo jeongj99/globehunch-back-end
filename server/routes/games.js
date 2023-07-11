@@ -92,7 +92,25 @@ module.exports = (db, actions) => {
   // POST create new game
   // curl --request POST http://localhost:8001/api/games/3
   router.post("/games", validateToken, async (req, res) => {
-    const loggedInUser = req.user;
+    const loggedInUserID = req.user.id;
+
+    const gameData = await (db.query(
+      `
+      INSERT INTO games (user_id, start_time)
+      VALUES ($1, NOW())
+      RETURNING id;
+      `, [loggedInUserID]
+    ));
+
+    const turnsData = await (db.query(
+      `
+      INSERT INTO turns ()
+      `
+    ));
+
+    return res.json(gameData.rows[0].id);
+
+
     // get all questions id
     // const { rows: questions } = await db.query(
     //   `SELECT id as question_id, latitude, longitude from questions;`
