@@ -94,6 +94,24 @@ module.exports = (db, actions) => {
   router.post("/games", validateToken, async (req, res) => {
     const loggedInUserID = req.user.id;
 
+    const allQuestions = await (db.query(
+      `
+      SELECT id as question_id, latitude, longitude
+      FROM questions;
+      `
+    ));
+
+    console.log(allQuestions.rows);
+
+    const selectedQuestions = [];
+    for (let i = 0; i < 3; i++) {
+      const n = Math.floor(Math.random() * allQuestions.rows.length);
+      selectedQuestions.push(allQuestions.rows[n]);
+      allQuestions.rows.splice(n, 1);
+    }
+
+    console.log(selectedQuestions);
+
     const gameData = await (db.query(
       `
       INSERT INTO games (user_id, start_time)
