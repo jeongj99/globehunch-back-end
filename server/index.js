@@ -11,7 +11,6 @@ const getUserByEmail = (db, email) => {
   `;
   return db.query(queryString, [email])
     .then(result => {
-      console.log(result.rows[0]);
       return result.rows[0];
     })
     .catch(error => {
