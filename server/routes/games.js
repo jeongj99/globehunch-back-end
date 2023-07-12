@@ -49,7 +49,7 @@ module.exports = (db, actions) => {
     const { email, password } = req.body;
 
     getUserByEmail(db, email).then(user => {
-      if (user || bcrypt.compareSync(password, user.password_hash)) {
+      if (user && bcrypt.compareSync(password, user.password_hash)) {
         const accessToken = createToken(user);
 
         req.session.accessToken = accessToken;
