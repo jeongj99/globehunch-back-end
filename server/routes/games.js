@@ -101,8 +101,6 @@ module.exports = (db, actions) => {
       `
     ));
 
-    console.log(allQuestions.rows);
-
     const selectedQuestions = [];
     for (let i = 0; i < 3; i++) {
       const n = Math.floor(Math.random() * allQuestions.rows.length);
@@ -120,11 +118,20 @@ module.exports = (db, actions) => {
       `, [loggedInUserID]
     ));
 
-    const turnsData = await (db.query(
-      `
-      INSERT INTO turns ()
-      `
-    ));
+    for (const question of selectedQuestions) {
+      const turnsData = await db.query(
+        `
+        INSERT INTO TURNS (user_id, game_id, question_id, turn_number, score)
+        VALUES ($1, $2, $3, $4, null)
+        RETURNING *;
+        `, []
+      );
+    }
+    // const turnsData = await (db.query(
+    //   `
+    //   INSERT INTO turns ()
+    //   `
+    // ));
 
     return res.json(gameData.rows[0].id);
 
