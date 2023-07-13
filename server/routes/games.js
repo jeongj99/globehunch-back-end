@@ -118,13 +118,13 @@ module.exports = (db, actions) => {
       `, [loggedInUserID]
     ));
 
-    for (const question of selectedQuestions) {
+    for (let i = 0; i < 3; i++) {
       const turnsData = await db.query(
         `
         INSERT INTO TURNS (user_id, game_id, question_id, turn_number, score)
         VALUES ($1, $2, $3, $4, null)
         RETURNING *;
-        `, []
+        `, [loggedInUserID, gameData.rows[0], selectedQuestions[i].question_id, i + 1]
       );
     }
     // const turnsData = await (db.query(
