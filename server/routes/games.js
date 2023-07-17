@@ -108,8 +108,6 @@ module.exports = (db, actions) => {
       allQuestions.rows.splice(n, 1);
     }
 
-    console.log(selectedQuestions);
-
     const gameData = await (db.query(
       `
       INSERT INTO games (user_id, start_time)
@@ -118,22 +116,31 @@ module.exports = (db, actions) => {
       `, [loggedInUserID]
     ));
 
+    const finalData = {
+      gameID: gameData.rows[0].id,
+      turns: []
+    };
+
     for (let i = 0; i < 3; i++) {
       const turnsData = await db.query(
         `
         INSERT INTO TURNS (user_id, game_id, question_id, turn_number, score)
         VALUES ($1, $2, $3, $4, null)
         RETURNING *;
-        `, [loggedInUserID, gameData.rows[0], selectedQuestions[i].question_id, i + 1]
+        `, [loggedInUserID, gameData.rows[0].id, selectedQuestions[i].question_id, i + 1]
       );
-    }
-    // const turnsData = await (db.query(
-    //   `
-    //   INSERT INTO turns ()
-    //   `
-    // ));
 
-    return res.json(gameData.rows[0].id);
+      const turnObject = {
+        id: turnsData.rows[0].id,
+        turnNumber: turnsData.rows[0].turn_number,
+        questionID: turnsData.rows[0].question_id,
+        score: turnsData.rows[0].score
+      };
+
+      finalData.turns.push(turnObject);
+    }
+
+    return res.json(finalData);
 
 
     // get all questions id
