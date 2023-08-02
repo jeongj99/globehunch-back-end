@@ -136,6 +136,8 @@ module.exports = (db, actions) => {
         id: turnsData.rows[0].id,
         turnNumber: turnsData.rows[0].turn_number,
         questionID: turnsData.rows[0].question_id,
+        latitude: selectedQuestions[i].latitude,
+        longitude: selectedQuestions[i].longitude,
         score: turnsData.rows[0].score
       };
 
