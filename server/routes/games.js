@@ -138,12 +138,12 @@ module.exports = (db, actions) => {
         questionID: turnsData.rows[0].question_id,
         latitude: selectedQuestions[i].latitude,
         longitude: selectedQuestions[i].longitude,
+        answerPosition: null,
         score: turnsData.rows[0].score
       };
 
       finalData.turns.push(turnObject);
     }
-
     return res.json(finalData);
   });
 
