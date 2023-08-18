@@ -225,10 +225,8 @@ module.exports = (db, actions) => {
 
   router.put("/calculate/:turn_id", (req, res) => {
     const { questionLat, questionLon, answerLat, answerLon } = req.body;
-    console.log('Hello from req.body', req.body);
 
     const distanceKm = calculateDistanceKm(questionLat, questionLon, answerLat, answerLon);
-    console.log(distanceKm);
 
     const score = calculateTurnScore(distanceKm);
 
