@@ -139,6 +139,7 @@ module.exports = (db, actions) => {
         latitude: selectedQuestions[i].latitude,
         longitude: selectedQuestions[i].longitude,
         answerPosition: null,
+        distance: null,
         score: turnsData.rows[0].score
       };
 
