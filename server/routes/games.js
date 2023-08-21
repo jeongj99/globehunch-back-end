@@ -120,7 +120,9 @@ module.exports = (db, actions) => {
       gameID: gameData.rows[0].id,
       turns: [],
       currentTurn: 1,
-      totalScore: 0
+      totalScore: 0,
+      popupMessageStatus: false,
+      errorMessageStatus: false
     };
 
     for (let i = 0; i < 3; i++) {
