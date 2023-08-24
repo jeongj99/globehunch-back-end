@@ -122,7 +122,8 @@ module.exports = (db, actions) => {
       currentTurn: 1,
       totalScore: 0,
       popupMessageStatus: false,
-      errorMessageStatus: false
+      errorMessageStatus: false,
+      finishedGame: false
     };
 
     for (let i = 0; i < 3; i++) {
