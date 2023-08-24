@@ -151,6 +151,26 @@ module.exports = (db, actions) => {
     return res.json(finalData);
   });
 
+  router.put("/calculate/:turn_id", validateToken, (req, res) => {
+    const { questionLat, questionLon, answerLat, answerLon } = req.body;
+
+    const distanceKm = calculateDistanceKm(questionLat, questionLon, answerLat, answerLon);
+
+    const score = calculateTurnScore(distanceKm);
+
+    db.query(
+      `
+        UPDATE turns
+        SET score = $1
+        WHERE id = $2
+        RETURNING score
+      `, [score, req.params.turn_id]
+    ).then(result => {
+      const turnScore = result.rows[0].score;
+      return res.json({ turnScore, distanceKm });
+    });
+  });
+
   // ****************************************************
   // GET find user by email
   //
@@ -224,26 +244,6 @@ module.exports = (db, actions) => {
         return b.total_for_game - a.total_for_game;
       });
       response.json(rows);
-    });
-  });
-
-  router.put("/calculate/:turn_id", (req, res) => {
-    const { questionLat, questionLon, answerLat, answerLon } = req.body;
-
-    const distanceKm = calculateDistanceKm(questionLat, questionLon, answerLat, answerLon);
-
-    const score = calculateTurnScore(distanceKm);
-
-    db.query(
-      `
-        UPDATE turns
-        SET score = $1
-        WHERE id = $2
-        RETURNING score
-      `, [score, req.params.turn_id]
-    ).then(result => {
-      const turnScore = result.rows[0].score;
-      return res.json({ turnScore, distanceKm });
     });
   });
 
