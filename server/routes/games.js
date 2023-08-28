@@ -225,24 +225,23 @@ module.exports = (db, actions) => {
   router.get("/users/scores", (request, response) => {
     db.query(
       `
-    SELECT 
-      user_id,
-      (SELECT user_name FROM users WHERE users.id = user_id), 
-      SUM(score) as total_for_game 
-    FROM turns 
-    GROUP BY game_id, user_id
-    HAVING SUM(score) > 0
-    ORDER BY user_id, SUM(score) desc`,
-      []
+      SELECT
+        u.id AS user_id,
+        u.user_name,
+        MAX(total_game_score) AS highest_game_score
+      FROM users u
+      JOIN (
+        SELECT
+          user_id,
+          game_id,
+          SUM(score) AS total_game_score
+        FROM turns
+        WHERE score > 0
+        GROUP BY user_id, game_id
+      ) t ON u.id = t.user_id
+      GROUP BY u.id, u.user_name
+      ORDER BY highest_game_score DESC;`
     ).then(({ rows }) => {
-      for (let i = rows.length - 1; i > 0; i--) {
-        if (rows[i - 1].user_id === rows[i].user_id) {
-          rows.splice(i, 1);
-        }
-      }
-      rows.sort((a, b) => {
-        return b.total_for_game - a.total_for_game;
-      });
       response.json(rows);
     });
   });
