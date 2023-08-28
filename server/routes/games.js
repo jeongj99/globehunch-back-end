@@ -171,6 +171,32 @@ module.exports = (db, actions) => {
     });
   });
 
+  // GET  global scores by user for leaderboard
+  // curl http://localhost:8001/api/users/scores
+  router.get("/users/scores", validateToken, (req, res) => {
+    db.query(
+      `
+      SELECT
+        u.id AS user_id,
+        u.user_name,
+        MAX(total_game_score) AS highest_game_score
+      FROM users u
+      JOIN (
+        SELECT
+          user_id,
+          game_id,
+          SUM(score) AS total_game_score
+        FROM turns
+        WHERE score > 0
+        GROUP BY user_id, game_id
+      ) t ON u.id = t.user_id
+      GROUP BY u.id, u.user_name
+      ORDER BY highest_game_score DESC;`
+    ).then(({ rows }) => {
+      res.json(rows);
+    });
+  });
+
   // ****************************************************
   // GET find user by email
   //
@@ -216,33 +242,6 @@ module.exports = (db, actions) => {
         user_id: request.params.user_id,
         score: rows[0].total
       });
-    });
-  });
-
-
-  // GET  global scores by user for leaderboard
-  // curl http://localhost:8001/api/users/scores
-  router.get("/users/scores", (request, response) => {
-    db.query(
-      `
-      SELECT
-        u.id AS user_id,
-        u.user_name,
-        MAX(total_game_score) AS highest_game_score
-      FROM users u
-      JOIN (
-        SELECT
-          user_id,
-          game_id,
-          SUM(score) AS total_game_score
-        FROM turns
-        WHERE score > 0
-        GROUP BY user_id, game_id
-      ) t ON u.id = t.user_id
-      GROUP BY u.id, u.user_name
-      ORDER BY highest_game_score DESC;`
-    ).then(({ rows }) => {
-      response.json(rows);
     });
   });
 
