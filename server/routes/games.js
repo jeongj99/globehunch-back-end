@@ -197,53 +197,5 @@ module.exports = (db, actions) => {
     });
   });
 
-  // ****************************************************
-  // GET find user by email
-  //
-  // curl http://localhost:8001/api/users/email/kate@site.com
-  router.get("/users/email/:email", (request, response) => {
-    db.query(
-      `
-      SELECT
-        * FROM users WHERE LOWER(email) = LOWER($1)`,
-      [request.params.email]
-    ).then(({ rows }) => {
-      response.json(rows);
-    });
-  });
-
-  // ****************************************************
-  // GET find user by id
-  //
-  // curl http://localhost:8001/api/users/id/3
-  router.get("/users/id/:user_id", (request, response) => {
-    db.query(
-      `
-      SELECT
-        * FROM users WHERE id = $1`,
-      [request.params.user_id]
-    ).then(({ rows }) => {
-      response.json(rows[0]);
-    });
-  });
-
-
-  // GET score for user
-  // curl http://localhost:8001/api/users/score/103
-  router.get("/users/:user_id/scores", (request, response) => {
-    db.query(
-      `
-    SELECT SUM(score) as total FROM turns WHERE user_id = $1
-    `,
-      [request.params.user_id]
-    ).then(({ rows }) => {
-      console.log(rows);
-      response.json({
-        user_id: request.params.user_id,
-        score: rows[0].total
-      });
-    });
-  });
-
   return router;
 };
