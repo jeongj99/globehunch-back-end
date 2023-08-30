@@ -46,6 +46,8 @@ const application = (
 
   app.use("/api", games(db, actions));
 
+  console.log(ENV);
+
   if (ENV === "development" || ENV === "test" || ENV === "production") {
     Promise.all([
       read(path.resolve(__dirname, `db/schema/create.sql`)),
