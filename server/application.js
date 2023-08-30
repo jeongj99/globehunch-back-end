@@ -45,6 +45,7 @@ const application = (
   app.use(sessionMiddleware);
 
   app.use("/api", games(db, actions));
+  console.log(ENV);
 
   if (ENV === "development" || ENV === "test") {
     Promise.all([
