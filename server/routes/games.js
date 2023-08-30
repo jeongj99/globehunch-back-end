@@ -197,5 +197,56 @@ module.exports = (db, actions) => {
     });
   });
 
+  // TEST ROUTES FOR DEPLOYMENT
+  router.get("/users", (req, res) => {
+    db.query(
+      `
+      SELECT * FROM users;
+      `
+    ).then(({ rows }) => {
+      res.json(rows);
+    });
+  });
+
+  router.get("/games", (req, res) => {
+    db.query(
+      `
+      SELECT * FROM games;
+      `
+    ).then(({ rows }) => {
+      res.json(rows);
+    });
+  });
+
+  router.get("/questions", (req, res) => {
+    db.query(
+      `
+      SELECT * FROM questions;
+      `
+    ).then(({ rows }) => {
+      res.json(rows);
+    });
+  });
+
+  router.get("/turns", (req, res) => {
+    db.query(
+      `
+      SELECT * FROM turns;
+      `
+    ).then(({ rows }) => {
+      res.json(rows);
+    });
+  });
+
+  router.get("/session", (req, res) => {
+    db.query(
+      `
+      SELECT * FROM session;
+      `
+    ).then(({ rows }) => {
+      res.json(rows);
+    });
+  });
+
   return router;
 };
