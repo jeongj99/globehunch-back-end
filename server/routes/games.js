@@ -10,7 +10,8 @@ module.exports = (db, actions) => {
   // ****************************************************
   // http://localhost:8001/api/register
   router.post('/register', (req, res) => {
-    const { username, email, password } = req.body;
+    const { username, email, passwordRegister } = req.body;
+    console.log(req.body);
 
     getUserByEmail(db, email).then(user => {
       if (user) {
@@ -26,7 +27,7 @@ module.exports = (db, actions) => {
             message: 'This username has already been taken!'
           });
         }
-        const hashedPassword = bcrypt.hashSync(password, 10);
+        const hashedPassword = bcrypt.hashSync(passwordRegister, 10);
         registerUser(db, username, email, hashedPassword).then(registered => {
           const accessToken = createToken(registered);
 
