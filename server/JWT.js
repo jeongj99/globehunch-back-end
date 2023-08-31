@@ -22,6 +22,7 @@ const validateToken = (req, res, next) => {
 
   verify(accessToken, process.env.JWT_SECRET, (error, decoded) => {
     if (error) {
+      console.log('wrong 2', process.env.JWT_SECRET);
       return res.status(400).json({ error });
     }
     req.authenticated = true;
