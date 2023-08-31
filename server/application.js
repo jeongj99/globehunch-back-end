@@ -38,7 +38,7 @@ const application = (
     calculateTurnScore: () => {}
   }
 ) => {
-  app.enable("trust proxy");
+  app.set("trust proxy", 1);
   app.use(cors({ credentials: true, origin: true }));
   app.use(helmet());
   app.use(bodyparser.json());
