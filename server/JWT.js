@@ -16,6 +16,7 @@ const validateToken = (req, res, next) => {
   const { accessToken } = req.session;
 
   if (!accessToken) {
+    console.log('wrong 1');
     return res.status(400).json({ error: 'User not authenticated' });
   }
 
