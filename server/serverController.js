@@ -14,4 +14,6 @@ const sessionMiddleware = session({
   }
 });
 
+console.log("session middleware", sessionMiddleware);
+
 module.exports = { sessionMiddleware };
