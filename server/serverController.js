@@ -9,7 +9,8 @@ const sessionMiddleware = session({
   resave: false,
   cookie: {
     httpOnly: true,
-    maxAge: parseInt(process.env.SESSION_MAX_AGE, 10)
+    maxAge: parseInt(process.env.SESSION_MAX_AGE, 10),
+    sameSite: "none"
   }
 });
 
