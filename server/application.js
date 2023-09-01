@@ -39,7 +39,10 @@ const application = (
   }
 ) => {
   app.set("trust proxy", 1);
-  app.use(cors({ credentials: true, origin: true }));
+  app.use(cors({
+    credentials: true,
+    origin: "https://globehunch.netlify.app/"
+  }));
   app.use(helmet());
   app.use(bodyparser.json());
 
